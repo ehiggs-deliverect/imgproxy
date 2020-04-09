@@ -185,7 +185,6 @@ func handleProcessing(reqID string, rw http.ResponseWriter, r *http.Request) {
 	}
 
 	checkTimeout(ctx)
-
 	imageData, processcancel, err := processImage(ctx)
 	defer processcancel()
 	if err != nil {

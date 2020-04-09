@@ -184,6 +184,8 @@ func downloadImage(ctx context.Context) (context.Context, context.CancelFunc, er
 		defer startPrometheusDuration(prometheusDownloadDuration)()
 	}
 
+	defer logTimer(fmt.Sprintf("Image download: %s", imageURL))()
+
 	res, err := requestImage(imageURL)
 	if res != nil {
 		defer res.Body.Close()

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	logrus "github.com/sirupsen/logrus"
 )
@@ -109,4 +110,12 @@ func logFatal(f string, args ...interface{}) {
 
 func logDebug(f string, args ...interface{}) {
 	logrus.Debugf(f, args...)
+}
+
+func logTimer(message string) func() {
+	t := time.Now()
+	return func() {
+		elapsed := time.Since(t).Seconds()
+		logNotice(fmt.Sprintf("%s: Finished in %vs", message, elapsed))
+	}
 }
