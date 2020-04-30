@@ -153,6 +153,11 @@ type processingOptions struct {
 
 	Filename string
 
+	MinWidth  int
+	MinHeight int
+
+	Proof bool
+
 	UsedPresets []string
 }
 
@@ -227,6 +232,9 @@ func newProcessingOptions() *processingOptions {
 			Sharpen:      0,
 			Dpr:          1,
 			Watermark:    watermarkOptions{Opacity: 1, Replicate: false, Gravity: gravityOptions{Type: gravityCenter}},
+			MinWidth:     0,
+			MinHeight:    0,
+			Proof:        false,
 		}
 	})
 
@@ -428,6 +436,32 @@ func applyHeightOption(po *processingOptions, args []string) error {
 	}
 
 	return parseDimension(&po.Height, "height", args[0])
+}
+
+func applyMinWidthOption(po *processingOptions, args []string) error {
+	if len(args) > 1 {
+		return fmt.Errorf("Invalid min_width arguments: %v", args)
+	}
+
+	return parseDimension(&po.MinWidth, "min_width", args[0])
+}
+
+func applyMinHeightOption(po *processingOptions, args []string) error {
+	if len(args) > 1 {
+		return fmt.Errorf("Invalid min_height arguments: %v", args)
+	}
+
+	return parseDimension(&po.MinHeight, "min_height", args[0])
+}
+
+func applyProofOption(po *processingOptions, args []string) error {
+	if len(args) > 1 {
+		return fmt.Errorf("Invalid proof arguments: %v", args)
+	}
+
+	po.Proof = parseBoolOption(args[0])
+
+	return nil
 }
 
 func applyEnlargeOption(po *processingOptions, args []string) error {
@@ -894,6 +928,12 @@ func applyProcessingOption(po *processingOptions, name string, args []string) er
 		return applyCacheBusterOption(po, args)
 	case "filename", "fn":
 		return applyFilenameOption(po, args)
+	case "min_width", "mw":
+		return applyMinWidthOption(po, args)
+	case "min_height", "mh":
+		return applyMinHeightOption(po, args)
+	case "proof", "pf":
+		return applyProofOption(po, args)
 	}
 
 	return fmt.Errorf("Unknown processing option: %s", name)

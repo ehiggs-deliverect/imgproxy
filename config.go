@@ -228,6 +228,10 @@ type config struct {
 	FallbackImagePath string
 	FallbackImageURL  string
 
+	ProofFallbackImageData string
+	ProofFallbackImagePath string
+	ProofFallbackImageURL  string
+
 	NewRelicAppName string
 	NewRelicKey     string
 
@@ -384,6 +388,10 @@ func configure() error {
 	strEnvConfig(&conf.FallbackImageData, "IMGPROXY_FALLBACK_IMAGE_DATA")
 	strEnvConfig(&conf.FallbackImagePath, "IMGPROXY_FALLBACK_IMAGE_PATH")
 	strEnvConfig(&conf.FallbackImageURL, "IMGPROXY_FALLBACK_IMAGE_URL")
+
+	strEnvConfig(&conf.ProofFallbackImageData, "IMGPROXY_PROOF_FALLBACK_IMAGE_DATA")
+	strEnvConfig(&conf.ProofFallbackImagePath, "IMGPROXY_PROOF_FALLBACK_IMAGE_PATH")
+	strEnvConfig(&conf.ProofFallbackImageURL, "IMGPROXY_PROOF_FALLBACK_IMAGE_URL")
 
 	strEnvConfig(&conf.NewRelicAppName, "IMGPROXY_NEW_RELIC_APP_NAME")
 	strEnvConfig(&conf.NewRelicKey, "IMGPROXY_NEW_RELIC_KEY")

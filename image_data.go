@@ -53,6 +53,22 @@ func getFallbackImageData() (*imageData, error) {
 	return nil, nil
 }
 
+func getProofFallbackImageData() (*imageData, error) {
+	if len(conf.ProofFallbackImageData) > 0 {
+		return base64ImageData(conf.ProofFallbackImageData, "proof fallback image")
+	}
+
+	if len(conf.ProofFallbackImagePath) > 0 {
+		return fileImageData(conf.ProofFallbackImagePath, "proof fallback image")
+	}
+
+	if len(conf.ProofFallbackImageURL) > 0 {
+		return remoteImageData(conf.ProofFallbackImageURL, "proof fallback image")
+	}
+
+	return nil, nil
+}
+
 func base64ImageData(encoded, desc string) (*imageData, error) {
 	data, err := base64.StdEncoding.DecodeString(encoded)
 	if err != nil {

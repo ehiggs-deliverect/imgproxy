@@ -204,6 +204,36 @@ func (s *ProcessingOptionsTestSuite) TestParsePathAdvancedHeight() {
 	assert.Equal(s.T(), 100, po.Height)
 }
 
+func (s *ProcessingOptionsTestSuite) TestParsePathAdvancedMinWidth() {
+	req := s.getRequest("http://example.com/unsafe/min_width:100/plain/http://images.dev/lorem/ipsum.jpg")
+	ctx, err := parsePath(context.Background(), req)
+
+	require.Nil(s.T(), err)
+
+	po := getProcessingOptions(ctx)
+	assert.Equal(s.T(), 100, po.MinWidth)
+}
+
+func (s *ProcessingOptionsTestSuite) TestParsePathAdvancedMinHeight() {
+	req := s.getRequest("http://example.com/unsafe/min_height:100/plain/http://images.dev/lorem/ipsum.jpg")
+	ctx, err := parsePath(context.Background(), req)
+
+	require.Nil(s.T(), err)
+
+	po := getProcessingOptions(ctx)
+	assert.Equal(s.T(), 100, po.MinHeight)
+}
+
+func (s *ProcessingOptionsTestSuite) TestParsePathAdvancedProof() {
+	req := s.getRequest("http://example.com/unsafe/pf:1/plain/http://images.dev/lorem/ipsum.jpg")
+	ctx, err := parsePath(context.Background(), req)
+
+	require.Nil(s.T(), err)
+
+	po := getProcessingOptions(ctx)
+	assert.Equal(s.T(), true, po.Proof)
+}
+
 func (s *ProcessingOptionsTestSuite) TestParsePathAdvancedEnlarge() {
 	req := s.getRequest("http://example.com/unsafe/enlarge:1/plain/http://images.dev/lorem/ipsum.jpg")
 	ctx, err := parsePath(context.Background(), req)

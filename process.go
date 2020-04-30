@@ -294,6 +294,27 @@ func applyWatermark(img *vipsImage, wmData *imageData, opts *watermarkOptions, f
 	return img.ApplyWatermark(wm, opacity)
 }
 
+func validateSize(ctx context.Context, img *vipsImage, data []byte, po *processingOptions, imgtype imageType) error {
+	srcWidth, srcHeight, _, _ := extractMeta(img)
+	if srcWidth < po.MinWidth || srcHeight < po.MinHeight {
+		if po.Proof && proofFallback != nil {
+			logWarning("Source image is too small. Using proof fallback image")
+			if err := img.Load(proofFallback.Data, proofFallback.Type, 1, 1.0, 1); err != nil {
+				return err
+			}
+		} else if fallbackImage != nil {
+			logWarning("Source image is too small. Proof fallback not available. Using fallback image")
+			if err := img.Load(fallbackImage.Data, fallbackImage.Type, 1, 1.0, 1); err != nil {
+				return err
+			}
+		} else {
+			logWarning("Source image is too small but no fallback images are configured so we continue")
+		}
+		return nil
+	}
+	return nil
+}
+
 func transformImage(ctx context.Context, img *vipsImage, data []byte, po *processingOptions, imgtype imageType) error {
 	var (
 		err     error
@@ -745,6 +766,9 @@ func processImage(ctx context.Context) ([]byte, context.CancelFunc, error) {
 			return nil, func() {}, err
 		}
 	} else {
+		if err := validateSize(ctx, img, imgdata.Data, po, imgdata.Type); err != nil {
+			return nil, func() {}, err
+		}
 		if err := transformImage(ctx, img, imgdata.Data, po, imgdata.Type); err != nil {
 			return nil, func() {}, err
 		}

@@ -26,7 +26,8 @@ var (
 	vipsTypeSupportLoad  = make(map[imageType]bool)
 	vipsTypeSupportSave  = make(map[imageType]bool)
 
-	watermark *imageData
+	watermark     *imageData
+	proofFallback *imageData
 )
 
 var vipsConf struct {
@@ -100,6 +101,11 @@ func initVips() error {
 		return fmt.Errorf("Can't load watermark: %s", err)
 	}
 
+	if err := vipsLoadProofFallback(); err != nil {
+		C.vips_shutdown()
+		return fmt.Errorf("Can't load proof fallback: %s", err)
+	}
+
 	vipsCollectMetrics()
 
 	return nil
@@ -131,6 +137,11 @@ func vipsError() error {
 
 func vipsLoadWatermark() (err error) {
 	watermark, err = getWatermarkData()
+	return
+}
+
+func vipsLoadProofFallback() (err error) {
+	proofFallback, err = getProofFallbackImageData()
 	return
 }
 
